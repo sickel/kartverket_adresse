@@ -1,5 +1,6 @@
 QGIS plugin to read coordinates from the Norwegian mapping authority's address-api, https://ws.geonorge.no/adresser/v1/#/default/get_sok
 
+version 0.2
 
 The data will be stored in a memory layer that will vanish when QGIS is exited.
 
@@ -10,10 +11,8 @@ A search on Storgata will give a lot of Storgata addresses around Norway, Storga
 For documentation of the API, see https://ws.geonorge.no/adresser/v1/
 
 
-The plugin is still experimental. 
 
 TODO: 
-* Fetches only the first 100 results. Fetch all results.
 * Only a few of the attributes are stored, add in all attributes
 * Use more of the search possibilities in the API
 * Store data in an existing map layer
