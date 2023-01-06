@@ -195,6 +195,31 @@ class KartverketAdresse:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+            
+            # sending off a query to https://ws.geonorge.no/adresser/v1/#/default/get_sok
+            # creating a new temporary data set and storing the data into that
+            # TODO: Add more search fields
+            # TODO: Add data to existing data set
+            url="https://ws.geonorge.no/adresser/v1/sok?sok=Bedringens%20vei&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
+            crs="EPSG:4258"
+            createlayer(crs)
+    
+    def createlayer(self,crs):
+                
+        # create layer to hold address information
+        vl = QgsVectorLayer("Adressepunkter", "temporary_array", "memory")
+        pr = vl.dataProvider()
+        vl.setCrs(crs)
+        pr.addAttributes([
+            QgsField("id", QVariant.Int),
+            QgsField("adressenavn", QVariant.String),
+            QgsField("adressetekst", QVariant.String)
+            QgsField("adressekode", QVariant.Int),
+            QgsField("komunenummer", QVariant.String),
+            QgsField("kommunenavn", QVariant.String)
+            ])
+        vl.updateFields() # tell the vector layer to fetch changes from the provider
+        QgsProject.instance().addMapLayer(vl)
+        self.dlg.MLWork.setLayer(vl)
+     
+    
