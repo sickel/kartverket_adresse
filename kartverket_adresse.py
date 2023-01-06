@@ -21,9 +21,11 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication,QVariant
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
+from qgis.core import QgsProject, QgsPoint,QgsPointXY, QgsFeature, Qgis, QgsVectorLayer, QgsField, QgsGeometry, QgsMapLayerProxyModel,QgsCoordinateReferenceSystem
+
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -202,24 +204,24 @@ class KartverketAdresse:
             # TODO: Add data to existing data set
             url="https://ws.geonorge.no/adresser/v1/sok?sok=Bedringens%20vei&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
             crs="EPSG:4258"
-            createlayer(crs)
+            self.createlayer(crs)
     
-    def createlayer(self,crs):
+    def createlayer(self,crsstring):
                 
         # create layer to hold address information
-        vl = QgsVectorLayer("Adressepunkter", "temporary_array", "memory")
+        vl = QgsVectorLayer("Point", "Adresseoppslag", "memory")
         pr = vl.dataProvider()
+        crs = QgsCoordinateReferenceSystem(crsstring)
         vl.setCrs(crs)
         pr.addAttributes([
             QgsField("id", QVariant.Int),
             QgsField("adressenavn", QVariant.String),
-            QgsField("adressetekst", QVariant.String)
+            QgsField("adressetekst", QVariant.String),
             QgsField("adressekode", QVariant.Int),
             QgsField("komunenummer", QVariant.String),
             QgsField("kommunenavn", QVariant.String)
             ])
         vl.updateFields() # tell the vector layer to fetch changes from the provider
         QgsProject.instance().addMapLayer(vl)
-        self.dlg.MLWork.setLayer(vl)
      
     
