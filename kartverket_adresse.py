@@ -25,14 +25,15 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication,QVariant
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsProject, QgsPoint,QgsPointXY, QgsFeature, Qgis, QgsVectorLayer, QgsField, QgsGeometry, QgsMapLayerProxyModel,QgsCoordinateReferenceSystem
-
+from PyQt5.QtWidgets import QLineEdit, QApplication, QWidget
 
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
 from .kartverket_adresse_dialog import KartverketAdresseDialog
 import os.path
-import json,urllib.request
+import json
+import urllib.request, urllib.parse
 
 class KartverketAdresse:
     """QGIS Plugin Implementation."""
@@ -204,7 +205,12 @@ class KartverketAdresse:
             # creating a new temporary data set and storing the data into that
             # TODO: Add more search fields
             # TODO: Add data to existing data set
-            url="https://ws.geonorge.no/adresser/v1/sok?sok=Bedringens%20vei&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
+            testurl="https://ws.geonorge.no/adresser/v1/sok?sok=Bedringens%20vei&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
+            sok = self.dlg.leSok.text()
+            #sok = "Bedringens"
+            sok = urllib.parse.quote(sok,safe='')
+            url=f"https://ws.geonorge.no/adresser/v1/sok?sok={sok}&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
+            
             #TODO: Check if all data are in.
             jsondata = urllib.request.urlopen(url).read()
             dataset = json.loads(jsondata)
@@ -219,7 +225,7 @@ class KartverketAdresse:
                 pnt=QgsPoint(x,y)
                 f = QgsFeature()
                 f.setGeometry(pnt)
-                # f.setAttributes([None,height,self.version,name])
+                f.setAttributes([adr['adressenavn'],adr['adressetekst'],adr['adressekode'],adr['kommunenummer'],adr['kommunenavn']])
                 f=pvd.addFeatures([f])
                 pvd.forceReload()
         
@@ -232,11 +238,10 @@ class KartverketAdresse:
         crs = QgsCoordinateReferenceSystem(crsstring)
         vl.setCrs(crs)
         pr.addAttributes([
-            QgsField("id", QVariant.Int),
             QgsField("adressenavn", QVariant.String),
             QgsField("adressetekst", QVariant.String),
             QgsField("adressekode", QVariant.Int),
-            QgsField("komunenummer", QVariant.String),
+            QgsField("kommunenummer", QVariant.String),
             QgsField("kommunenavn", QVariant.String)
             ])
         vl.updateFields() # tell the vector layer to fetch changes from the provider

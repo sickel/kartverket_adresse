@@ -1,4 +1,20 @@
-QGIS plugin to read coordinates from kartverkets address-api, https://ws.geonorge.no/adresser/v1/#/default/get_sok
+QGIS plugin to read coordinates from the Norwegian mapping authority's address-api, https://ws.geonorge.no/adresser/v1/#/default/get_sok
 
-For documentation, see https://ws.geonorge.no/adresser/v1/
 
+The data will be stored in a memory layer that will vanish when QGIS is exited.
+
+The text entered is used for the søk attribute, i.e. it is a freetext search on all available addresses. For example
+a search on Høyenhallveien will give two sets of addresses, in Oslo and Drøbak, Høyenhallv* will also show results from Høyenhallvegen in Gjøvik.
+A search on Storgata will give a lot of Storgata addresses around Norway, Storgata Frogn will only give the ones in Frogn.
+
+For documentation of the API, see https://ws.geonorge.no/adresser/v1/
+
+
+The plugin is still experimental. 
+
+TODO: 
+* Fetches only the first 100 results. Fetch all results.
+* Only a few of the attributes are stored, add in all attributes
+* Use more of the search possibilities in the API
+* Store data in an existing map layer
+* Rewrite as a processing plugin

@@ -10,7 +10,7 @@ version=0.1
 author=Morten Sickel
 email=morten@sickel.net
 
-about=This plugin is fetching coordinates from the kartverket adress-api at https://ws.geonorge.no/adresser/v1/#/default/get_sok
+about=This plugin is fetching coordinates from the Norwegian Mapping authority's adress-api at https://ws.geonorge.no/adresser/v1/#/default/get_sok. The text entered will be used for a free-text search over all information. At the moment, only the first 100 addresses returned will be shown.
 
 tracker=https://github.com/sickel/kartverket_adresse
 repository=https://github.com/sickel/kartverket_adresse
@@ -23,7 +23,7 @@ hasProcessingProvider=no
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=web address geocoder
+tags=web address geocoder norway kartverket
 
 homepage=https://github.com/sickel/kartverket_adresse
 category=Web
