@@ -198,42 +198,51 @@ class KartverketAdresse:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            crs="EPSG:4258"
-            worklayer=self.createlayer(crs)
-            pvd = worklayer.dataProvider()
             # sending off a query to https://ws.geonorge.no/adresser/v1/#/default/get_sok
             # creating a new temporary data set and storing the data into that
             # TODO: Add more search fields
             # TODO: Add data to existing data set
+            
             testurl="https://ws.geonorge.no/adresser/v1/sok?sok=Bedringens%20vei&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
+            treffPerSide = 1000
             sok = self.dlg.leSok.text()
+            side = 0
+            fuzzy = 'false'
             #sok = "Bedringens"
             sok = urllib.parse.quote(sok,safe='')
-            url=f"https://ws.geonorge.no/adresser/v1/sok?sok={sok}&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
-            
-            #TODO: Check if all data are in.
-            jsondata = urllib.request.urlopen(url).read()
-            dataset = json.loads(jsondata)
-            adresser = dataset["adresser"]
-            for adr in adresser:
-                reppoint = adr["representasjonspunkt"]
-                if reppoint["epsg"] != crs:
-                    print(f"Feil crs: {reppoint['epsg']}")
-                    continue
-                x=reppoint["lon"]
-                y=reppoint["lat"]
-                pnt=QgsPoint(x,y)
-                f = QgsFeature()
-                f.setGeometry(pnt)
-                f.setAttributes([adr['adressenavn'],adr['adressetekst'],adr['adressekode'],adr['kommunenummer'],adr['kommunenavn']])
-                f=pvd.addFeatures([f])
-                pvd.forceReload()
-        
+            crs="EPSG:4258"
+            worklayer=self.createlayer(crs,sok)
+            pvd = worklayer.dataProvider()
+            while True:
+                url=f"https://ws.geonorge.no/adresser/v1/sok?sok={sok}&fuzzy={fuzzy}&utkoordsys=4258&treffPerSide={treffPerSide}&side={side}&asciiKompatibel=true"
+                jsondata = urllib.request.urlopen(url).read()
+                dataset = json.loads(jsondata)
+                adresser = dataset["adresser"]
+                for adr in adresser:
+                    reppoint = adr["representasjonspunkt"]
+                    if reppoint["epsg"] != crs:
+                        print(f"Feil crs: {reppoint['epsg']}")
+                        continue
+                    x=reppoint["lon"]
+                    y=reppoint["lat"]
+                    pnt=QgsPoint(x,y)
+                    f = QgsFeature()
+                    f.setGeometry(pnt)
+                    f.setAttributes([adr['adressenavn'],adr['adressetekst'],adr['adressekode'],adr['kommunenummer'],adr['kommunenavn']])
+                    f=pvd.addFeatures([f])
+                    pvd.forceReload()
+                metadata = dataset["metadata"]
+                print(metadata)
+                # Check if all data have been received
+                if metadata["totaltAntallTreff"] > metadata["viserTil"]:
+                    side += 1
+                else:
+                    break
 
     
-    def createlayer(self,crsstring):
+    def createlayer(self,crsstring,sok=''):
         # create layer to hold address information
-        vl = QgsVectorLayer("Point", "Adresseoppslag", "memory")
+        vl = QgsVectorLayer("Point", f"Adresseoppslag - {sok}", "memory")
         pr = vl.dataProvider()
         crs = QgsCoordinateReferenceSystem(crsstring)
         vl.setCrs(crs)
