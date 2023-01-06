@@ -32,7 +32,7 @@ from .resources import *
 # Import the code for the dialog
 from .kartverket_adresse_dialog import KartverketAdresseDialog
 import os.path
-
+import json,urllib.request
 
 class KartverketAdresse:
     """QGIS Plugin Implementation."""
@@ -197,17 +197,35 @@ class KartverketAdresse:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            
+            crs="EPSG:4258"
+            worklayer=self.createlayer(crs)
+            pvd = worklayer.dataProvider()
             # sending off a query to https://ws.geonorge.no/adresser/v1/#/default/get_sok
             # creating a new temporary data set and storing the data into that
             # TODO: Add more search fields
             # TODO: Add data to existing data set
             url="https://ws.geonorge.no/adresser/v1/sok?sok=Bedringens%20vei&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
-            crs="EPSG:4258"
-            self.createlayer(crs)
+            #TODO: Check if all data are in.
+            jsondata = urllib.request.urlopen(url).read()
+            dataset = json.loads(jsondata)
+            adresser = dataset["adresser"]
+            for adr in adresser:
+                reppoint = adr["representasjonspunkt"]
+                if reppoint["epsg"] != crs:
+                    print(f"Feil crs: {reppoint['epsg']}")
+                    continue
+                x=reppoint["lon"]
+                y=reppoint["lat"]
+                pnt=QgsPoint(x,y)
+                f = QgsFeature()
+                f.setGeometry(pnt)
+                # f.setAttributes([None,height,self.version,name])
+                f=pvd.addFeatures([f])
+                pvd.forceReload()
+        
+
     
     def createlayer(self,crsstring):
-                
         # create layer to hold address information
         vl = QgsVectorLayer("Point", "Adresseoppslag", "memory")
         pr = vl.dataProvider()
@@ -223,5 +241,5 @@ class KartverketAdresse:
             ])
         vl.updateFields() # tell the vector layer to fetch changes from the provider
         QgsProject.instance().addMapLayer(vl)
-     
+        return(vl)
     
