@@ -228,7 +228,11 @@ class KartverketAdresse:
                     pnt=QgsPoint(x,y)
                     f = QgsFeature()
                     f.setGeometry(pnt)
-                    f.setAttributes([adr['adressenavn'],adr['adressetekst'],adr['adressekode'],adr['kommunenummer'],adr['kommunenavn']])
+                    f.setAttributes([adr['adressenavn'],adr['adressetekst'],adr['adressetilleggsnavn'],
+                                     adr['adressekode'],adr['nummer'],adr['bokstav'],
+                                     adr['kommunenummer'],adr['kommunenavn'],
+                                     adr['gardsnummer'],adr['bruksnummer'],adr['festenummer'],adr['undernummer'],
+                                     adr['objtype'],adr['poststed'],adr['postnummer'],adr['adressetekstutenadressetilleggsnavn']])
                     f=pvd.addFeatures([f])
                     pvd.forceReload()
                 metadata = dataset["metadata"]
@@ -249,11 +253,23 @@ class KartverketAdresse:
         pr.addAttributes([
             QgsField("adressenavn", QVariant.String),
             QgsField("adressetekst", QVariant.String),
+            QgsField("adressetilleggsnavn", QVariant.String),
             QgsField("adressekode", QVariant.Int),
+            QgsField("nummer", QVariant.Int),
+            QgsField("bokstav", QVariant.String),
             QgsField("kommunenummer", QVariant.String),
-            QgsField("kommunenavn", QVariant.String)
+            QgsField("kommunenavn", QVariant.String),
+            QgsField("gardsnummer", QVariant.Int),
+            QgsField("bruksnummer", QVariant.Int),
+            QgsField("festenummer", QVariant.Int),
+            QgsField("undernummer", QVariant.Int),
+            QgsField("objtype", QVariant.String),
+            QgsField("poststed", QVariant.String),
+            QgsField("postnummer", QVariant.String),
+            QgsField("adressetekstutenadressetilleggsnavn", QVariant.String)
             ])
         vl.updateFields() # tell the vector layer to fetch changes from the provider
         QgsProject.instance().addMapLayer(vl)
         return(vl)
+    
     
