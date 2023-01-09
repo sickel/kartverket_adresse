@@ -209,9 +209,9 @@ class KartverketAdresse:
             side = 0
             fuzzy = 'false'
             #sok = "Bedringens"
-            sok = urllib.parse.quote(sok,safe='')
             crs="EPSG:4258"
             worklayer=self.createlayer(crs,sok)
+            sok = urllib.parse.quote(sok,safe='')
             pvd = worklayer.dataProvider()
             while True:
                 url=f"https://ws.geonorge.no/adresser/v1/sok?sok={sok}&fuzzy={fuzzy}&utkoordsys=4258&treffPerSide={treffPerSide}&side={side}&asciiKompatibel=true"
