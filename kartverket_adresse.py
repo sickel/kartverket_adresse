@@ -208,12 +208,12 @@ class KartverketAdresse:
             sok = self.dlg.leSok.text()
             side = 0
             fuzzy = 'false'
-            #sok = "Bedringens"
             crs="EPSG:4258"
             worklayer=self.createlayer(crs,sok)
             sok = urllib.parse.quote(sok,safe='')
             pvd = worklayer.dataProvider()
-            while True:
+            dataToFetch = True
+            while dataToFetch:
                 url=f"https://ws.geonorge.no/adresser/v1/sok?sok={sok}&fuzzy={fuzzy}&utkoordsys=4258&treffPerSide={treffPerSide}&side={side}&asciiKompatibel=true"
                 jsondata = urllib.request.urlopen(url).read()
                 dataset = json.loads(jsondata)
@@ -241,7 +241,7 @@ class KartverketAdresse:
                 if metadata["totaltAntallTreff"] > metadata["viserTil"]:
                     side += 1
                 else:
-                    break
+                    dataToFetch = False
 
     
     def createlayer(self,crsstring,sok=''):
