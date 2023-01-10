@@ -7,7 +7,7 @@
 name=Kartverket adresse-API
 qgisMinimumVersion=3.0
 description=This plugin fetches coordinates for Norwegian addresses using the Kartverket open adress-API
-version=0.3
+version=0.35
 author=Morten Sickel
 email=morten@sickel.net
 
@@ -21,7 +21,7 @@ repository=https://github.com/sickel/kartverket_adresse
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-# changelog=
+changelog=Giving a message when receiving 10000 points
 
 # Tags are comma separated with spaces allowed
 tags=web address geocoder norway kartverket api

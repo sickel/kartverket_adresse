@@ -1,6 +1,6 @@
 QGIS plugin to read coordinates from the Norwegian mapping authority's address-api, https://ws.geonorge.no/adresser/v1/#/default/get_sok
 
-version 0.3
+version 0.35
 
 The data will be stored in a memory layer that will vanish when QGIS is exited unless saved
 
@@ -8,8 +8,10 @@ The text entered is used for the søk attribute, i.e. it is a freetext search on
 a search on Høyenhallveien will give two sets of addresses, in Oslo and Drøbak, Høyenhallv* will also show results from Høyenhallvegen in Gjøvik.
 A search on Storgata will give a lot of Storgata addresses around Norway, Storgata Frogn will only give the ones in Frogn.
 
-For documentation of the API, see https://ws.geonorge.no/adresser/v1/
+Note that there will never be returned more than 10000 points. This is a deliberate limitation in the API. Follow the description on the url below 
+how to get larger data sets.
 
+For documentation of the API, see https://ws.geonorge.no/adresser/v1/
 
 
 TODO: 
