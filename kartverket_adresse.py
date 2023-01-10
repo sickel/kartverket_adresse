@@ -26,7 +26,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsProject, QgsPoint,QgsPointXY, QgsFeature, Qgis, QgsVectorLayer, QgsField, QgsGeometry, QgsMapLayerProxyModel,QgsCoordinateReferenceSystem
 from PyQt5.QtWidgets import QLineEdit, QApplication, QWidget
-
+from qgis.gui import  QgsMessageBar
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -236,7 +236,8 @@ class KartverketAdresse:
                     f=pvd.addFeatures([f])
                     pvd.forceReload()
                 metadata = dataset["metadata"]
-                print(metadata)
+                if metadata["totaltAntallTreff"] == 10000:
+                    self.iface.messageBar().pushMessage("AdresseAPI - Advarsel", "10000 punkter blir hentet, kan være inkomplett", level=Qgis.Warning)
                 # Check if all data have been received
                 if metadata["totaltAntallTreff"] > metadata["viserTil"]:
                     side += 1
