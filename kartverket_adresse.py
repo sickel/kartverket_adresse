@@ -205,18 +205,27 @@ class KartverketAdresse:
             
             testurl="https://ws.geonorge.no/adresser/v1/sok?sok=Bedringens%20vei&fuzzy=false&utkoordsys=4258&treffPerSide=100&side=0&asciiKompatibel=true"
             treffPerSide = 1000
-            sok = self.dlg.leSok.text()
+            soktekst = self.dlg.leSok.text()
             side = 0
             fuzzy = 'false'
             crs="EPSG:4258"
-            worklayer=self.createlayer(crs,sok)
-            sok = urllib.parse.quote(sok,safe='')
-            pvd = worklayer.dataProvider()
+            sok = urllib.parse.quote(soktekst,safe='')
+            worklayer = None
+            pvd = None
             dataToFetch = True
             while dataToFetch:
                 url=f"https://ws.geonorge.no/adresser/v1/sok?sok={sok}&fuzzy={fuzzy}&utkoordsys=4258&treffPerSide={treffPerSide}&side={side}&asciiKompatibel=true"
                 jsondata = urllib.request.urlopen(url).read()
                 dataset = json.loads(jsondata)
+                metadata = dataset["metadata"]
+                if metadata["totaltAntallTreff"] == 10000:
+                    self.iface.messageBar().pushMessage("AdresseAPI - Advarsel", "10000 punkter blir hentet, kan være inkomplett", level=Qgis.Warning)
+                if metadata["totaltAntallTreff"] == 0:
+                    self.iface.messageBar().pushMessage("AdresseAPI - Advarsel", f"Fant ingen treff på '{soktekst}'", level=Qgis.Warning)
+                    return(None)
+                if worklayer is None:
+                    worklayer = self.createlayer(crs,soktekst)
+                    pvd = worklayer.dataProvider()
                 adresser = dataset["adresser"]
                 for adr in adresser:
                     reppoint = adr["representasjonspunkt"]
@@ -235,11 +244,6 @@ class KartverketAdresse:
                                      adr['objtype'],adr['poststed'],adr['postnummer'],adr['adressetekstutenadressetilleggsnavn']])
                     f=pvd.addFeatures([f])
                     pvd.forceReload()
-                metadata = dataset["metadata"]
-                if metadata["totaltAntallTreff"] == 10000:
-                    self.iface.messageBar().pushMessage("AdresseAPI - Advarsel", "10000 punkter blir hentet, kan være inkomplett", level=Qgis.Warning)
-                if metadata["totaltAntallTreff"] == 0:
-                    self.iface.messageBar().pushMessage("AdresseAPI - Advarsel", f"Fant ingen treff på {sok}", level=Qgis.Warning)
                 # Check if all data have been received
                 if metadata["totaltAntallTreff"] > metadata["viserTil"]:
                     side += 1

@@ -6,12 +6,17 @@
 [general]
 name=Kartverket adresse-API
 qgisMinimumVersion=3.0
-description=This plugin fetches coordinates for Norwegian addresses using the Kartverket open adress-API
-version=0.35
+description=Fetch coordinates for Norwegian addresses using the Kartverket open adress-API
+version=1
 author=Morten Sickel
 email=morten@sickel.net
 
-about=This plugin is fetching coordinates from the Norwegian Mapping authority's adress-api at https://ws.geonorge.no/adresser/v1/#/default/get_sok. The text entered will be used for a free-text search over nearly all information on an address.
+about=This plugin is fetching coordinates from the Norwegian Mapping authority's adress-api at https://ws.geonorge.no/adresser/v1/#/default/get_sok. The text entered will be used for a free-text search over nearly all information on an address. Use * to match any number of characters, ? to match a single character.
+    
+    In case more than 10000 matches are found, only the first 10000 will be sent by the API and a warning will be shown, go to https://geonorge.no to find complete data sets.
+    
+    The plugin will be found under the Web menu in QGIS.
+
 
 tracker=https://github.com/sickel/kartverket_adresse
 repository=https://github.com/sickel/kartverket_adresse
@@ -21,7 +26,8 @@ repository=https://github.com/sickel/kartverket_adresse
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-changelog=Giving a message when receiving 10000 points
+changelog=1.0 Better handling of empty data sets, better description in meta data
+    0.35 Giving a message when receiving 10000 points
 
 # Tags are comma separated with spaces allowed
 tags=web address geocoder norway kartverket api
