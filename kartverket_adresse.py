@@ -238,6 +238,8 @@ class KartverketAdresse:
                 metadata = dataset["metadata"]
                 if metadata["totaltAntallTreff"] == 10000:
                     self.iface.messageBar().pushMessage("AdresseAPI - Advarsel", "10000 punkter blir hentet, kan være inkomplett", level=Qgis.Warning)
+                if metadata["totaltAntallTreff"] == 0:
+                    self.iface.messageBar().pushMessage("AdresseAPI - Advarsel", f"Fant ingen treff på {sok}", level=Qgis.Warning)
                 # Check if all data have been received
                 if metadata["totaltAntallTreff"] > metadata["viserTil"]:
                     side += 1
