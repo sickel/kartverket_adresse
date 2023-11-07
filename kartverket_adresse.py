@@ -24,9 +24,10 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication,QVariant
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
-from qgis.core import QgsProject, QgsPoint,QgsPointXY, QgsFeature, Qgis, QgsVectorLayer, QgsField, QgsGeometry, QgsMapLayerProxyModel,QgsCoordinateReferenceSystem
+from qgis.core import QgsProject, QgsPoint,QgsPointXY, QgsFeature, Qgis, QgsVectorLayer, QgsField, QgsGeometry, QgsMapLayerProxyModel,QgsCoordinateReferenceSystem,QgsCoordinateTransform
 from PyQt5.QtWidgets import QLineEdit, QApplication, QWidget
 from qgis.gui import  QgsMessageBar
+from qgis.utils import iface
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -243,12 +244,22 @@ class KartverketAdresse:
                                      adr['gardsnummer'],adr['bruksnummer'],adr['festenummer'],adr['undernummer'],
                                      adr['objtype'],adr['poststed'],adr['postnummer'],adr['adressetekstutenadressetilleggsnavn']])
                     f=pvd.addFeatures([f])
-                    pvd.forceReload()
+                    # pvd.forceReload()
                 # Check if all data have been received
                 if metadata["totaltAntallTreff"] > metadata["viserTil"]:
                     side += 1
                 else:
                     dataToFetch = False
+            
+            canvas = iface.mapCanvas()
+            canvas.waitWhileRendering() 
+            extent = worklayer.extent()
+            fromCRS = QgsCoordinateReferenceSystem("EPSG:4326")
+            toCRS = QgsProject.instance().crs()
+            transformation = QgsCoordinateTransform(fromCRS, toCRS, QgsProject.instance())
+            extent = transformation.transformBoundingBox(extent)
+            canvas.setExtent(extent)
+            canvas.refresh
 
     
     def createlayer(self,crsstring,sok=''):
