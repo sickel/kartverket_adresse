@@ -6,15 +6,20 @@
 [general]
 name=Kartverket adresse-API
 qgisMinimumVersion=3.0
-description=This plugin fetches coordinates for Norwegian addresses using the Kartverket open adress-API
-version=0.36
+description=Fetch coordinates for Norwegian addresses using the Kartverket open adress-API
+version=1
 author=Morten Sickel
 email=morten@sickel.net
 
 about=This plugin is fetching coordinates from the Norwegian Mapping authority's adress-api at https://ws.geonorge.no/adresser/v1/#/default/get_sok. The text entered will be used for a free-text search over nearly all information on an address.
-    Use * or ? as wildcharts. E.g. Parkve?en vill search for all addresses in Parkveien or Parkvegen. Park* will search for all addresses starting with Park. 
+    
+    Use * or ? as wildcharts. E.g. Parkve?en vill search for all addresses in Parkveien or Parkvegen. Parkwill search for all addresses starting with Park. 
+    
     The API will not return more than 10000 items. If this limits is reached, a warning will be shown. In case bigger datasets are needed, they can be downloaded from https://geonorge.no
+    
     The data that are returned will be stored in a new dataset for each query. These data sets are QGIS temporary memory layers and will be deleted when exiting QGIS. To store a data set, press the IC icon to the right of the name and select where to store it and in which format.
+    The plugin will be found under the Web menu in QGIS.
+    
     This plugin is neither made by nor endorsed by the Norwegian Mapping Authority. 
 
 tracker=https://github.com/sickel/kartverket_adresse
@@ -25,7 +30,8 @@ repository=https://github.com/sickel/kartverket_adresse
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-changelog=Giving a message when receiving 10000 points
+changelog=1.0 Better handling of empty data sets, better description in meta data
+    0.35 Giving a message when receiving 10000 points
 
 # Tags are comma separated with spaces allowed
 tags=web address geocoder norway kartverket api
