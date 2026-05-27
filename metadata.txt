@@ -6,8 +6,9 @@
 [general]
 name=Kartverket adresse-API
 qgisMinimumVersion=3.0
+qgisMaximumVersion=4.99
 description=Fetch coordinates for Norwegian addresses using the Kartverket open adress-API
-version=1.1
+version=1.2
 author=Morten Sickel
 email=morten@sickel.net
 
@@ -31,7 +32,8 @@ repository=https://github.com/sickel/kartverket_adresse
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-changelog=1.1 Zooming in on found adresses
+changelog=1.2 Updated to QGIS v4
+    1.1 Zooming in on found adresses
     1.0 Better handling of empty data sets, better description in meta data
     0.35 Giving a message when receiving 10000 points
 
