@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication,QVariant
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsProject, QgsPoint,QgsPointXY, QgsFeature, Qgis, QgsVectorLayer, QgsField, QgsGeometry, QgsMapLayerProxyModel,QgsCoordinateReferenceSystem
-from PyQt5.QtWidgets import QLineEdit, QApplication, QWidget
+from qgis.PyQt.QtWidgets import QLineEdit, QApplication, QWidget
 from qgis.gui import  QgsMessageBar
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -195,7 +195,7 @@ class KartverketAdresse:
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        result = self.dlg.exec_()
+        result = self.dlg.exec()
         # See if OK was pressed
         if result:
             # sending off a query to https://ws.geonorge.no/adresser/v1/#/default/get_sok
